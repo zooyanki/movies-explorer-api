@@ -18,16 +18,6 @@ module.exports.readUsers = (req, res, next) => {
     });
 };
 
-// module.exports.readUserId = (req, res, next) => {
-//   User.findById(req.params._id)
-//     .then((user) => res.send(user))
-//     .catch((err) => {
-//       if (err) {
-//         next(err);
-//       }
-//     });
-// };
-
 module.exports.createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
     .then((hash) => User.create({
@@ -82,6 +72,7 @@ module.exports.readUser = (req, res, next) => {
     });
 };
 
-// module.exports.signout = (req, res, next) => {
-//   const {token} = req.cookie;
-// }
+module.exports.signout = (req, res) => {
+  res.clearCookie('token');
+  return res.status(200).redirect('/signin');
+};

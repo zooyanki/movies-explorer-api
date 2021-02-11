@@ -1,3 +1,5 @@
+const require('dotenv').config();
+
 const { Joi, celebrate } = require('celebrate');
 const { errors } = require('celebrate');
 
@@ -24,11 +26,10 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 const allowedCors = [
-  // 'http://localhost:3000',
-  // 'https://zooyanki.students.nomoredomains.rocks',
-  // 'http://zooyanki.students.nomoredomains.rocks',
-  // 'https://api.zooyanki.students.nomoredomains.rocks',
-  // 'http://api.zooyanki.students.nomoredomains.rocks',
+  'https://okino.students.nomoredomains.rocks',
+  'http://okino.students.nomoredomains.rocks',
+  'https://api.okino.students.nomoredomains.rocks',
+  'http://api.okino.students.nomoredomains.rocks',
 ];
 
 app.use((req, res, next) => {
