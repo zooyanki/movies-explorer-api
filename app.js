@@ -1,4 +1,4 @@
-const require('dotenv').config();
+require('dotenv').config();
 
 const { Joi, celebrate } = require('celebrate');
 const { errors } = require('celebrate');
@@ -14,7 +14,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const NotFoundError = require('./errors/notFoundError');
 
-const { login, createUser } = require('./controllers/user');
+const { login, createUser, signout } = require('./controllers/user');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -67,7 +67,7 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-// app.post('/signout', signout);
+app.post('/signout', signout);
 
 app.use(auth);
 

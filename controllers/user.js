@@ -53,7 +53,8 @@ module.exports.login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      const { NODE_ENV, JWT_SECRET } = process.env;
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
       res.cookie('token', token, { httpOnly: true });
       res.send({ token });
     })
@@ -74,5 +75,5 @@ module.exports.readUser = (req, res, next) => {
 
 module.exports.signout = (req, res) => {
   res.clearCookie('token');
-  return res.status(200).redirect('/signin');
+  return res.status(302).redirect('/signin');
 };
