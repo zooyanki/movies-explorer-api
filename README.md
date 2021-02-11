@@ -1,1 +1,1 @@
-# movies-explorer-api
+https://api.okino.students.nomoredomains.rocks
