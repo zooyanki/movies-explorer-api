@@ -25,7 +25,6 @@ module.exports.createMovie = (req, res, next) => {
     description,
     image,
     trailer,
-    movieId,
     nameRU,
     nameEN,
     thumbnail,
