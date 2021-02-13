@@ -42,7 +42,8 @@ const movieSchema = new mongoose.Schema({
     },
   },
   movieId: {
-    type: mongoose.Schema.ObjectId,
+    type: String,
+    required: true
   },
   thumbnail: {
     type: String,

@@ -7,6 +7,7 @@ const User = require('../models/user');
 // Ошибки
 const Unauthorized = require('../errors/unauthorized');
 const BadRequestError = require('../errors/badRequestError');
+const ConflictError = require('../errors/conflictError');
 
 module.exports.readUsers = (req, res, next) => {
   User.find({})
@@ -19,21 +20,29 @@ module.exports.readUsers = (req, res, next) => {
 };
 
 module.exports.createUser = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10)
-    .then((hash) => User.create({
-      name: req.body.name,
-      email: req.body.email,
-      password: hash,
-    }))
-    .then(() => res.send(true))
-    .catch((err) => {
+  User.findOne({ name: req.body.name, email: req.body.email, password: req.body.password }) 
+    .then((user) => {
+      if (!user) {
+        bcrypt.hash(req.body.password, 10)
+          .then((hash) => User.create({
+            name: req.body.name,
+            email: req.body.email,
+            password: hash,
+          }))
+          .then(() => res.send(true))
+          .catch((err) => {
+            if (err) {
+              next(new ConflictError('Такой пользователь уже существует'))
+            }
+          });
+      }
+    })
+    .catch ((err) => {
       if (err) {
-        if (err.name === 'MongoError' && err.code === 11000) {
-          next(new BadRequestError('Такой пользователь уже существует'));
-        }
         next(err);
       }
-    });
+    })
+  
 };
 
 module.exports.updateUser = (req, res, next) => {

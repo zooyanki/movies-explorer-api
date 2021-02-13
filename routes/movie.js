@@ -19,12 +19,13 @@ movieRouter.post('/movies', celebrate({
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
     thumbnail: Joi.string().required().regex(/https?:\/\/\S+\.\S+/m),
+    movieId: Joi.string().alphanum(),
   }),
 }), createMovie);
 
 movieRouter.delete('/movies/:_id', celebrate({
   params: Joi.object().keys({
-    _id: Joi.string().alphanum().length(24),
+    _id: Joi.string().hex().length(24),
   }),
 }), deleteMovie);
 

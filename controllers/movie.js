@@ -14,7 +14,17 @@ module.exports.readMovies = (req, res, next) => {
 
 module.exports.createMovie = (req, res, next) => {
   const {
-    country, director, duration, year, description, image, trailer, nameRU, nameEN, thumbnail, movieId,
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailer,
+    nameRU,
+    nameEN,
+    thumbnail,
+    movieId
   } = req.body;
 
   Movie.create({
@@ -29,6 +39,7 @@ module.exports.createMovie = (req, res, next) => {
     nameEN,
     thumbnail,
     owner: req.user,
+    movieId
   })
     .then((movie) => res.send(movie))
     .catch((err) => {
