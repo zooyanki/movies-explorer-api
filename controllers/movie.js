@@ -54,7 +54,7 @@ module.exports.deleteMovie = (req, res, next) => {
     .then((movie) => {
       if (movie) {
         if (String(movie.owner) === req.user._id) {
-          Movie.findByIdAndRemove(req.params._id)
+          movie.remove(req.params._id)
             .then((delMovie) => res.send(delMovie));
         } else {
           next(new AccessError('У вас нет прав для удаления'));
