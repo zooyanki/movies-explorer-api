@@ -6,7 +6,6 @@ const User = require('../models/user');
 
 // Ошибки
 const Unauthorized = require('../errors/unauthorized');
-const BadRequestError = require('../errors/badRequestError');
 const ConflictError = require('../errors/conflictError');
 
 module.exports.readUsers = (req, res, next) => {
@@ -20,7 +19,7 @@ module.exports.readUsers = (req, res, next) => {
 };
 
 module.exports.createUser = (req, res, next) => {
-  User.findOne({ name: req.body.name, email: req.body.email, password: req.body.password }) 
+  User.findOne({ name: req.body.name, email: req.body.email, password: req.body.password })
     .then((user) => {
       if (!user) {
         bcrypt.hash(req.body.password, 10)
@@ -32,17 +31,16 @@ module.exports.createUser = (req, res, next) => {
           .then(() => res.send(true))
           .catch((err) => {
             if (err) {
-              next(new ConflictError('Такой пользователь уже существует'))
+              next(new ConflictError('Такой пользователь уже существует'));
             }
           });
       }
     })
-    .catch ((err) => {
+    .catch((err) => {
       if (err) {
         next(err);
       }
-    })
-  
+    });
 };
 
 module.exports.updateUser = (req, res, next) => {

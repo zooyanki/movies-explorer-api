@@ -7,7 +7,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 
-const {userRouter, movieRouter} = require('./routes/index');
+const { userRouter, movieRouter } = require('./routes/index');
 
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -16,7 +16,7 @@ const NotFoundError = require('./errors/notFoundError');
 
 const { login, createUser, signout } = require('./controllers/user');
 
-const { PORT, MAIN_DOMAIN, API_DOMAIN} = process.env;
+const { PORT, MAIN_DOMAIN, API_DOMAIN } = process.env;
 const app = express();
 
 app.use(helmet());
