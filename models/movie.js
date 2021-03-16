@@ -41,6 +41,10 @@ const movieSchema = new mongoose.Schema({
       },
     },
   },
+  movieId: {
+    type: String,
+    required: true,
+  },
   thumbnail: {
     type: String,
     required: true,
@@ -54,12 +58,6 @@ const movieSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.ObjectId,
     required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-    minlength: 2,
-    maxlength: 30,
   },
   nameRU: {
     type: String,

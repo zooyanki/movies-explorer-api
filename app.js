@@ -5,9 +5,9 @@ const { errors } = require('celebrate');
 
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 
-const userRouter = require('./routes/user.js');
-const movieRouter = require('./routes/movie.js');
+const { userRouter, movieRouter } = require('./routes/index');
 
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -16,8 +16,10 @@ const NotFoundError = require('./errors/notFoundError');
 
 const { login, createUser, signout } = require('./controllers/user');
 
-const { PORT = 3000 } = process.env;
+const { PORT, MAIN_DOMAIN, API_DOMAIN } = process.env;
 const app = express();
+
+app.use(helmet());
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -26,10 +28,12 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 const allowedCors = [
-  'https://okino.students.nomoredomains.rocks',
-  'http://okino.students.nomoredomains.rocks',
-  'https://api.okino.students.nomoredomains.rocks',
-  'http://api.okino.students.nomoredomains.rocks',
+  `https://${MAIN_DOMAIN}`,
+  `http://${MAIN_DOMAIN}`,
+  `https://${API_DOMAIN}`,
+  `http://${API_DOMAIN}`,
+  'http://localhost:3000',
+  'http://localhost:3001'
 ];
 
 app.use((req, res, next) => {
@@ -90,7 +94,7 @@ app.use((err, req, res, next) => {
     .status(statusCode)
     .send({
       message: statusCode === 500
-        ? 'На сервере произошла ошибка'
+        ? message
         : message,
     });
   next();

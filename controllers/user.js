@@ -6,7 +6,7 @@ const User = require('../models/user');
 
 // Ошибки
 const Unauthorized = require('../errors/unauthorized');
-const BadRequestError = require('../errors/badRequestError');
+const ConflictError = require('../errors/conflictError');
 
 module.exports.readUsers = (req, res, next) => {
   User.find({})
@@ -19,18 +19,25 @@ module.exports.readUsers = (req, res, next) => {
 };
 
 module.exports.createUser = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10)
-    .then((hash) => User.create({
-      name: req.body.name,
-      email: req.body.email,
-      password: hash,
-    }))
-    .then(() => res.send(true))
+  User.findOne({ name: req.body.name, email: req.body.email, password: req.body.password })
+    .then((user) => {
+      if (!user) {
+        bcrypt.hash(req.body.password, 10)
+          .then((hash) => User.create({
+            name: req.body.name,
+            email: req.body.email,
+            password: hash,
+          }))
+          .then(() => res.send(true))
+          .catch((err) => {
+            if (err) {
+              next(new ConflictError('Такой пользователь уже существует'));
+            }
+          });
+      }
+    })
     .catch((err) => {
       if (err) {
-        if (err.name === 'MongoError' && err.code === 11000) {
-          next(new BadRequestError('Такой пользователь уже существует'));
-        }
         next(err);
       }
     });
@@ -54,12 +61,13 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const { NODE_ENV, JWT_SECRET } = process.env;
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
       res.cookie('token', token, { httpOnly: true });
       res.send({ token });
     })
     .catch(() => {
-      next(new Unauthorized('Пользователь неавторизован'));
+      next(new Unauthorized('Неправильная почта или пароль'));
     });
 };
 

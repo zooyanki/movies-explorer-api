@@ -14,11 +14,32 @@ module.exports.readMovies = (req, res, next) => {
 
 module.exports.createMovie = (req, res, next) => {
   const {
-    country, director, duration, year, description, image, trailer, nameRU, nameEN, thumbnail,
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailer,
+    nameRU,
+    nameEN,
+    thumbnail,
+    movieId,
   } = req.body;
 
   Movie.create({
-    country, director, duration, year, description, image, trailer, nameRU, nameEN, thumbnail, owner: req.user,
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailer,
+    nameRU,
+    nameEN,
+    thumbnail,
+    owner: req.user,
+    movieId,
   })
     .then((movie) => res.send(movie))
     .catch((err) => {
@@ -33,7 +54,7 @@ module.exports.deleteMovie = (req, res, next) => {
     .then((movie) => {
       if (movie) {
         if (String(movie.owner) === req.user._id) {
-          Movie.findByIdAndRemove(req.params._id)
+          movie.remove(req.params._id)
             .then((delMovie) => res.send(delMovie));
         } else {
           next(new AccessError('У вас нет прав для удаления'));
