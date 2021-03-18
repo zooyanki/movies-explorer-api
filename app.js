@@ -33,7 +33,6 @@ const allowedCors = [
   `https://${API_DOMAIN}`,
   `http://${API_DOMAIN}`,
   'http://localhost:3000',
-  'http://localhost:3001'
 ];
 
 app.use((req, res, next) => {
